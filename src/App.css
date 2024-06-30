@@ -1,38 +1,128 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
 .App {
   text-align: center;
+  padding: 20px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.question-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.option-button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.option-button:hover {
+  background-color: #e0e0e0;
+}
+
+.option-button.correct {
+  background-color: #065c09;
+  color: #ffffff;
+}
+
+.option-button.incorrect {
+  background-color: #b10a0a;
+  color: #ffffff;
+
+}
+
+.controls {
+  margin-top: 20px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.submit-button, .next-button, .exit-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button {
+  background-color: #0b6dbd;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.submit-button:hover {
+  background-color: #42a5f5;
 }
 
-@keyframes App-logo-spin {
-  from {
+.next-button {
+  background-color: #09680e;
+  color: white;
+}
+
+.next-button:hover {
+  background-color: #66bb6a;
+}
+
+.exit-button{
+  background-color: #ff0000;
+  color: white;
+}
+
+
+.feedback {
+  font-size: 18px;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.feedback.correct {
+  color: #19cc22;
+}
+
+.feedback.incorrect {
+  color: #d32f2f;
+}
+
+.results {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #000;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+@keyframes spin {
+  0% {
     transform: rotate(0deg);
   }
-  to {
+  100% {
     transform: rotate(360deg);
   }
 }
+
