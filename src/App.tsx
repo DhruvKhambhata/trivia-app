@@ -8,15 +8,26 @@ interface TriviaQuestion {
   incorrect_answers: string[];
 }
 
+interface AppState {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  selectedAnswer: string | null;
+  questionCount: number;
+  correctCount: number;
+  loadingNext: boolean;
+}
+
 const App: React.FC = () => {
-  const [question, setQuestion] = useState<string>("");
-  const [options, setOptions] = useState<string[]>([]);
-  const [correctAnswer, setCorrectAnswer] = useState<string>("");
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [questionCount, setQuestionCount] = useState<number>(0);
-  const [correctCount, setCorrectCount] = useState<number>(0);
-  const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [loadingNext, setLoadingNext] = useState<boolean>(false);
+  const [state, setState] = useState<AppState>({
+    question: "",
+    options: [],
+    correctAnswer: "",
+    selectedAnswer: null,
+    questionCount: 0,
+    correctCount: 0,
+    loadingNext: false,
+  });
 
   const fetchQuestion = useCallback(async () => {
     try {
@@ -24,15 +35,18 @@ const App: React.FC = () => {
         "https://opentdb.com/api.php?amount=1"
       );
       const data = response.data.results[0];
-      setQuestion(data.question);
       const shuffledOptions = [
         data.correct_answer,
         ...data.incorrect_answers,
       ].sort(() => Math.random() - 0.5);
-      setOptions(shuffledOptions);
-      setCorrectAnswer(data?.correct_answer);
+      setState((prevState) => ({
+        ...prevState,
+        question: data.question,
+        options: shuffledOptions,
+        correctAnswer: data.correct_answer,
+      }));
     } catch (error) {
-      console.log("Somthing Went Wrong",error)
+      console.log("Something Went Wrong", error);
     }
   }, []);
 
@@ -41,46 +55,73 @@ const App: React.FC = () => {
   }, [fetchQuestion]);
 
   const handleAnswerSelect = (answer: string) => {
-    setSelectedAnswer(answer);
+    setState((prevState) => ({
+      ...prevState,
+      selectedAnswer: answer,
+    }));
   };
 
   const handleNext = async () => {
-    setLoadingNext(true);
-    try {
-      setSelectedAnswer(null);
-      setQuestionCount(questionCount + 1);
-      if (questionCount < 10) {
-        await fetchQuestion();
+    setState((prevState) => ({
+      ...prevState,
+      loadingNext: true,
+    }));
+
+    setTimeout(async () => {
+      try {
+        setState((prevState) => ({
+          ...prevState,
+          selectedAnswer: null,
+          questionCount: prevState.questionCount + 1,
+        }));
+        if (state.questionCount < 10) {
+          await fetchQuestion();
+        }
+      } finally {
+        setState((prevState) => ({
+          ...prevState,
+          loadingNext: false,
+        }));
       }
-    } finally {
-      setLoadingNext(false);
-    }
+    }, 4000);
   };
 
   const handleExit = async () => {
-    setLoadingNext(true);
+    setState((prevState) => ({
+      ...prevState,
+      loadingNext: true,
+    }));
+    setTimeout(async () => {
+      await fetchQuestion();
+    },4000)
     try {
-      setQuestionCount(0);
-      setCorrectCount(0);
-      setSelectedAnswer(null);
-      if (questionCount < 10) {
-        await fetchQuestion();
-      }
+      setState({
+        question: "",
+        options: [],
+        correctAnswer: "",
+        selectedAnswer: null,
+        questionCount: 0,
+        correctCount: 0,
+        loadingNext: false,
+      });
     } finally {
-      setLoadingNext(false);
+      setState((prevState) => ({
+        ...prevState,
+        loadingNext: false,
+      }));
     }
   };
 
-  if (questionCount >= 10) {
+  if (state.questionCount >= 10) {
     return (
       <div className="results">
         <h2>Results</h2>
         <p>Total Questions Served: 10</p>
-        <p>Total Correct Answers: {correctCount}</p>
-        <p>Total Incorrect Answers: {10 - correctCount}</p>
+        <p>Total Correct Answers: {state?.correctCount}</p>
+        <p>Total Incorrect Answers: {10 - state?.correctCount}</p>
         <button
           onClick={handleExit}
-          disabled={loadingNext}
+          disabled={state?.loadingNext}
           className="exit-button"
         >
           Exit
@@ -92,17 +133,17 @@ const App: React.FC = () => {
     <div className="App">
       <h1>Trivia Game</h1>
       <div className="question-container">
-        {question ? (
+        {state?.question ? (
           <>
-            <h2>{question}</h2>
-            {options.map((option, index) => (
+            <h2>{state?.question}</h2>
+            {state?.options?.map((option, index) => (
               <button
                 key={index}
                 onClick={() => handleAnswerSelect(option)}
-                disabled={!!selectedAnswer}
+                disabled={!!state?.selectedAnswer}
                 className={`option-button ${
-                  selectedAnswer &&
-                  (option === correctAnswer ? "correct" : "incorrect")
+                  state?.selectedAnswer &&
+                  (option === state?.correctAnswer ? "correct" : "incorrect")
                 }`}
               >
                 {option}
@@ -113,22 +154,22 @@ const App: React.FC = () => {
           "Loading..."
         )}
       </div>
-      {selectedAnswer && (
+      {state?.selectedAnswer && (
         <>
-          {selectedAnswer === correctAnswer ? (
+          {state?.selectedAnswer === state?.correctAnswer ? (
             <p className="feedback correct">Correct!</p>
           ) : (
             <p className="feedback incorrect">
-              Wrong! The correct answer is {correctAnswer}
+              Wrong! The correct answer is {state?.correctAnswer}
             </p>
           )}
           <div className="controls">
             <button
               onClick={handleNext}
               className="next-button"
-              disabled={loadingNext}
+              disabled={state?.loadingNext}
             >
-              Next {loadingNext && <span className="spinner" />}
+              Next {state?.loadingNext && <span className="spinner" />}
             </button>
           </div>
         </>
