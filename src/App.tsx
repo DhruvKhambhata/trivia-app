@@ -52,7 +52,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     fetchQuestion();
-  }, [fetchQuestion]);
+  }, []);
 
   const handleAnswerSelect = (answer: string) => {
     setState((prevState) => ({
