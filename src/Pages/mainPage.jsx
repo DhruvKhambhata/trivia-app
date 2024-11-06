@@ -28,8 +28,6 @@ const MainPage = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [openInstruction, setInstruction] = useState(false);
-  const [currentText, setCurrentText] = useState("Quiz App");
-  const [currentIndex, setCurrentIndex] = useState(0);
   const handleGameStart = () => {
     navigate("/choice-form");
   };
@@ -37,17 +35,6 @@ const MainPage = () => {
   const handleClose = () => {
     setInstruction(false);
   };
-
-  useEffect(() => {
-    if (currentIndex < currentText.length) {
-      const timeout = setTimeout(() => {
-        setCurrentText((prevText) => prevText + currentText[currentIndex]);
-        setCurrentIndex((prevIndex) => prevIndex + 1);
-      }, 100);
-
-      return () => clearTimeout(timeout);
-    }
-  }, []);
 
   return (
     <div className="bg-100">
