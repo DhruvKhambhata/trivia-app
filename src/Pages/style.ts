@@ -14,11 +14,6 @@ export const useStyles = makeStyles((theme: Theme)=>({
     },
    },
    title: {
-    fontFamily: "'Courier New', Courier, monospace",
-    fontSize: "2rem",
-    whiteSpace: "pre", // Keeps the typewriter spacing consistent
-    borderRight: "3px solid black", // Cursor effect
-    animation: "$blink 0.7s step-end infinite" // Blinking cursor effect
   },
   "@keyframes blink": {
     from: { borderColor: "black" },
@@ -191,4 +186,11 @@ export const useStyles = makeStyles((theme: Theme)=>({
       fontFamily:"cursive !important",
       fontWeight:"500 !important"
     },
+    Typography:{
+      fontSize:"3em !important",
+      [theme.breakpoints.between('xs',"md")]: {
+        fontSize:"2em !important",
+      },
+    }
+
 }))

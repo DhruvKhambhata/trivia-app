@@ -45,9 +45,13 @@ const MainPage = () => {
             wrapper="span"
             deletionSpeed={10}
             speed={10}
-            style={{ fontSize: "3em", display: "inline-block" }}
+            style={{ display: "inline-block" }}
+            sx={{
+              fontSize: { xs: "2em", sm: "2.5em", md: "3em" },
+              border:{lg: "1px solid red"}
+            }}
+            className={classes.Typography}
             repeat={Infinity}
-            cursor={false}
           />
         </h3>
         <Tilt>
